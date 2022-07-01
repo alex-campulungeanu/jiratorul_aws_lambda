@@ -1,0 +1,27 @@
+sprint-update:
+  handler: src/handlers/sprint.updateDetails
+  events:
+    - http:
+        path: sprint/{sprintId}
+        method: patch
+        request:
+          parameters:
+            paths:
+              sprintId: true
+        cors: true
+        # authorizer: ${self:custom.authorizers.jwt-check}
+
+sprint-update-user-details:
+  handler: src/handlers/sprint.updateUserDetails
+  events:
+    - http:
+        # cannot use sprint/{sprintId}/user/{userId}
+        path: sprint-user/{sprintId}/user/{userId}
+        method: patch
+        request:
+          parameters:
+            paths:
+              sprintId: true
+              userId: true
+        # authorizer: ${self:custom.authorizers.jwt-check}
+        cors: true

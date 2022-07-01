@@ -1,0 +1,43 @@
+version: '3.8'
+
+x-dev:
+  &proxy_conf
+  http_proxy: "${HTTP_PROXY}"
+  https_proxy: "${HTTPS_PROXY}"
+
+services:
+  backend:
+    container_name: jirl_be
+    image: node:14
+    environment:
+      << : *proxy_conf
+      CHOKIDAR_USEPOLLING: "true"
+      TS_NODE_TRANSPILE_ONLY: "true"
+    working_dir: /app
+    ports:
+      - 3300:3300
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - /app/dist
+    restart: on-failure
+    command: tail -f /dev/null
+
+  db:
+    container_name: jirl_db
+    image: postgres
+    environment:
+      << : *proxy_conf
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: jiratorul
+    volumes:
+    - db-data:/var/lib/postgresql/data
+    - ./sql/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
+    ports:
+      - 54313:5432
+    restart: on-failure
+      
+volumes:
+  db-data:
+    name: jirlvolumedb

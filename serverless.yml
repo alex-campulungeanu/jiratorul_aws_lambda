@@ -1,0 +1,66 @@
+service: jiratorul
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-offline
+  - serverless-plugin-typescript
+  # - serverless-plugin-include-dependencies
+  
+provider:
+  name: aws
+  region: eu-central-1
+  runtime: nodejs12.x
+  # environment: #global
+  #   JWT_KEY: jwtkeyfromserverless
+
+custom:
+  serverless-offline:
+    httpPort: 3300
+  authorizers:
+    jwt-check:
+      name: jwt-check
+      type: request
+      identitySource: method.request.header.Authorization #, method.request.querystring.role
+
+functions:
+  - ${file(src/routes/report.yml)}
+  - ${file(src/routes/sprint.yml)}
+  - ${file(src/routes/auth.yml)}
+  - ${file(src/routes/sanity.yml)}
+
+# resources:
+  # API Gateway Errors
+  # - ${file(src/resources/api-gateway-errors.yml)}
+
+resources:
+  Resources:
+    # This response is needed for custom authorizer failures cors support ¯\_(ツ)_/¯
+    GatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: EXPIRED_TOKEN
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
+    AuthFailureGatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: UNAUTHORIZED
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
+
+# only include the Prisma binary required on AWS Lambda while packaging
+package:
+  patterns:
+    - '!node_modules/.prisma/client/libquery_engine-*'
+    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
+    - '!node_modules/prisma/libquery_engine-*'
+    - '!node_modules/@prisma/engines/**'
+  # individually: true
+  # excludeDevDependencies: false

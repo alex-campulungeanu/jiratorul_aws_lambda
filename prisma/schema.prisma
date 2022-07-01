@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
+  previewFeatures = ["interactiveTransactions"]
+  // binaryTargets = [env("PRISMA_BINARY_TARGET")]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int          @id @default(autoincrement())
+  createdAt DateTime?    @default(now()) @map("created_at")
+  updatedAt DateTime?    @updatedAt() @map("updated_at")
+  name      String
+  email     String       @unique
+  password  String
+  active    Boolean      @default(true)
+  roles     UserRole[]
+  sprints   UserSprint[]
+  issues    Issue[]
+
+  @@map("user")
+}
+
+model Role {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String?
+  users       UserRole[]
+
+  @@map("role")
+}
+
+model Report {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt() @map("updated_at")
+  month       Int
+  year        Int
+  description String?
+  statusId    Int      @default(1) @map("status_id")
+  status      Status   @relation(fields: [statusId], references: [id])
+  sprints     Sprint[]
+
+  @@unique([month, year])
+  @@map("report")
+}
+
+model Sprint {
+  id           Int          @id @default(autoincrement())
+  url          String       @unique
+  name         String?
+  bankHolidays Int          @default(0) @map("bank_holidays")
+  startDate    String?      @map("start_date")
+  endDate      String?      @map("end_date")
+  sprintDays   Int          @default(10) @map("sprint_days")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt() @map("updated_at")
+  reportId     Int          @map("report_id")
+  report       Report       @relation(fields: [reportId], references: [id])
+  users        UserSprint[]
+  issues       Issue[]
+
+  @@map("sprint")
+}
+
+model Issue {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  summary     String?
+  points      Float     @default(0)
+  userId      Int       @map("user_id")
+  user        User      @relation(fields: [userId], references: [id])
+  sprintId    Int       @map("sprint_id")
+  sprint      Sprint    @relation(fields: [sprintId], references: [id])
+  issueTypeId Int       @map("issue_type_id")
+  issueType   IssueType @relation(fields: [issueTypeId], references: [id])
+  createdAt   DateTime? @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt() @map("updated_at")
+
+  @@map("issue")
+}
+
+model IssueType {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  issues Issue[]
+
+  @@map("issue_type")
+}
+
+model Status {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  reports Report[]
+
+  @@map("status")
+}
+
+model UserSprint {
+  user          User     @relation(fields: [userId], references: [id])
+  userId        Int      @map("user_id")
+  sprint        Sprint   @relation(fields: [sprintId], references: [id])
+  sprintId      Int      @map("sprint_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  vacationDays  Int?     @default(0) @map("vacation_days")
+  feedbackWeeks Int?     @default(0) @map("feedback_weeks")
+  completed     Boolean  @default(false)
+
+  @@id([userId, sprintId])
+  @@map("user_sprint")
+}
+
+model UserRole {
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @map("user_id")
+  role      Role     @relation(fields: [roleId], references: [id])
+  roleId    Int      @map("role_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([userId, roleId])
+  @@map("user_role")
+}

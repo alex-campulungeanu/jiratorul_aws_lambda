@@ -1,0 +1,262 @@
+{
+	"info": {
+		"_postman_id": "a43729e6-8776-4cc1-ae97-a1d514203b66",
+		"name": "jiratorul",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "report",
+			"item": [
+				{
+					"name": "add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/report",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/report",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/report/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"report",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "populate",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jiraSesionId\": \"50428FBBC1A0C9BDF4935CB176EC8D01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/report/populate/3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"report",
+								"populate",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/report/info/7",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"report",
+								"info",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "sprint",
+			"item": [
+				{
+					"name": "update-sprint",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bankHolidays\": 12\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/sprint/13",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"sprint",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-user",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"vacationDays\": 11,\r\n    \"feedbackWeeks\": 112\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/sprint/1/user/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"sprint",
+								"1",
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"test@test.com\",\r\n    \"password\": \"test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"test@test.com\",\r\n    \"password\": \"test\",\r\n    \"name\": \"Test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/signup",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sanity",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/sanity",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"sanity"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

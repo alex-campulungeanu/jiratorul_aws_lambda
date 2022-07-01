@@ -1,0 +1,39 @@
+name: Deploy AWS Prod
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    # TODO: check if i can create myself .serveless credentials file so i dont install serverless globaly
+    - name: Install Serverless Framework
+      run: npm install -g serverless
+    - name: Serverless AWS authentication
+      run: sls config credentials --provider aws --key ${{ secrets.AWS_KEY }} --secret ${{ secrets.AWS_SECRET }}
+    - name: Create env file
+      run: |
+        cat > .env << EOF
+        JWT_SECRET=${{ secrets.JWT_SECRET }}
+        JIRA_BASE_URL=${{ secrets.JIRA_BASE_URL }}
+        DB_HOST=${{ secrets.DB_HOST }}
+        DB_USERNAME=${{ secrets.DB_USERNAME }}
+        DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+        DB_PORT=${{ secrets.DB_PORT }}
+        DB_NAME=${{ secrets.DB_NAME }}
+        DATABASE_URL=postgresql://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ secrets.DB_NAME }}?pgbouncer=true
+        EOF
+    - name: Install NPM dependencies
+      run: npm install
+    - name: Deploy Lambda functions
+      run: npm run deploy:stack #-s prod
+    - name: Migrate and seed prisma
+      run: |
+        npm run prisma:deploy 
+        npm run prisma:seed

@@ -1,0 +1,7 @@
+sanity-check:
+  handler: src/handlers/sanity.index
+  events:
+    - http:
+        path: sanity
+        method: get
+        cors: true

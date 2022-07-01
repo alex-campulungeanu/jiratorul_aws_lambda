@@ -1,0 +1,18 @@
+jwt-check:
+  handler: src/middlewares/jwt.check
+
+auth-login:
+  handler: src/handlers/auth.login
+  events:
+    - http:
+        path: login
+        method: post
+        cors: true
+
+auth-signup:
+  handler: src/handlers/auth.signup
+  events:
+    - http:
+        path: signup
+        method: post
+        cors: true

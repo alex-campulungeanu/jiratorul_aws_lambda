@@ -1,0 +1,73 @@
+report-get-all:
+  handler: src/handlers/report.getAll
+  # name: ${self:service}-func1-${opt:stage, self:provider.stage, 'dev'}
+  events:
+    - http:
+        path: report
+        method: get
+        cors: true
+        # authorizer: ${self:custom.authorizers.jwt-check}
+
+report-populate:
+  handler: src/handlers/report.populate
+  # name: ${self:service}-func1-${opt:stage, self:provider.stage, 'dev'}
+  events:
+    - http:
+        path: report/populate/{id}
+        method: post
+        request:
+          parameters:
+            paths:
+              id: true
+        cors: true
+        # authorizer: ${self:custom.authorizers.jwt-check}
+
+report-get-by-id:
+  handler: src/handlers/report.getById
+  # name: ${self:service}-func1-${opt:stage, self:provider.stage, 'dev'}
+  events:
+    - http:
+        path: report/{id}
+        method: get
+        request:
+          parameters:
+            paths:
+              id: true
+        cors: true
+        # authorizer: ${self:custom.authorizers.jwt-check}
+
+report-add:
+  handler: src/handlers/report.add
+  events:
+    - http:
+        path: report
+        method: post
+        cors: true
+        # authorizer: ${self:custom.authorizers.jwt-check}
+
+report-update:
+  handler: src/handlers/report.update
+  events:
+    - http:
+        path: report/update/{id}
+        method: patch
+        request:
+          parameters:
+            paths:
+              id: true
+        cors: true
+        # authorizer: ${self:custom.authorizers.jwt-check}
+
+report-get-info-by-id:
+  handler: src/handlers/report.info
+  # name: ${self:service}-func1-${opt:stage, self:provider.stage, 'dev'}
+  events:
+    - http:
+        path: report/info/{id}
+        method: get
+        request:
+          parameters:
+            paths:
+              id: true
+        cors: true
+        # authorizer: ${self:custom.authorizers.jwt-check}
